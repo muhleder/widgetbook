@@ -18,7 +18,7 @@ class TrippleSplitView extends StatefulWidget {
     required this.centerChild,
     required this.rightChild,
     required this.isLeftDisabled,
-    required this.isRightDisabled,
+    required bool isRightDisabled,
   }) : super(key: key);
 
   final double leftMinWidth;
@@ -28,7 +28,7 @@ class TrippleSplitView extends StatefulWidget {
   final Widget rightChild;
 
   final bool isLeftDisabled;
-  final bool isRightDisabled;
+  final bool isRightDisabled = true;
 
   @override
   State<TrippleSplitView> createState() => _TrippleSplitViewState();
@@ -68,19 +68,26 @@ class _TrippleSplitViewState extends State<TrippleSplitView> {
       onTap: () {
         setState(() {
           if (detectorSide == DetectorSide.left) {
+            showLeft = !showLeft;
             final minRatio = widget.leftMinWidth / currentTotalWidth;
-
-            if (leftRatio < minRatio) {
+            if (showLeft) {
               leftRatio = minRatio;
-              showLeft = true;
+            } else {
+              leftRatio = 0;
             }
-          } else {
-            final minRatio = widget.rightMinWidth / currentTotalWidth;
 
-            if (rightRatio < minRatio) {
-              rightRatio = minRatio;
-              showRight = true;
-            }
+            // if (leftRatio < minRatio) {
+            //   leftRatio = minRatio;
+            //   showLeft = true;
+            // }
+          } else {
+            showRight = !showRight;
+            // final minRatio = widget.rightMinWidth / currentTotalWidth;
+
+            // if (rightRatio < minRatio) {
+            //   rightRatio = minRatio;
+            //   showRight = true;
+            // }
           }
         });
       },
@@ -160,8 +167,7 @@ class _TrippleSplitViewState extends State<TrippleSplitView> {
               ),
             if (!widget.isLeftDisabled) buildGestureDetector(DetectorSide.left),
             Expanded(child: widget.centerChild),
-            if (!widget.isRightDisabled)
-              buildGestureDetector(DetectorSide.right),
+            if (!widget.isRightDisabled) buildGestureDetector(DetectorSide.right),
             if (!widget.isRightDisabled)
               SizedBox(
                 width: rightRatio * currentTotalWidth,
